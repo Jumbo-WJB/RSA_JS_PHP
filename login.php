@@ -28,4 +28,33 @@ $hex_encrypt_data = trim($_POST['password']); //十六进制数据
 $encrypt_data = pack("H*", $hex_encrypt_data);//对十六进制数据进行转换
 openssl_private_decrypt($encrypt_data, $decrypt_data, $private_key);
 
-echo '解密后的数据：' . $decrypt_data;
+// echo '解密后的数据：' . $decrypt_data;
+$aaaa = "$decrypt_data";
+define('SQL_HOST','127.0.0.1');//数据库地址
+define("SQL_USER","root");//数据库用户名
+define("SQL_PASSWORD","root");//数据库密码
+define("SQL_DATABASE","dvwa");//连接的数据库名字
+define("SQL_PORT","3306");//数据库端口号,默认为3306
+//define("SQL_SOCKDET","");
+$mysql = mysqli_connect(SQL_HOST,SQL_USER,SQL_PASSWORD,SQL_DATABASE,SQL_PORT) or  die(mysqli_error());
+
+//连接不上切换数据库
+//mysqli_select_db(SQLDATABASE);
+//查询语句
+$sql = "SELECT first_name, last_name FROM users WHERE user_id = $aaaa";
+// echo $sql;
+//查询
+$results = $mysql -> query($sql);
+
+print_r($results);
+//遍历循环打印数据
+while ($row = mysqli_fetch_array($results))
+{
+//    print_r($row);
+    echo $row['first_name'];
+    echo "<br>";
+}
+//释放
+mysqli_free_result($results);
+//关闭连接
+mysqli_close($mysql);
